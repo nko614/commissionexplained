@@ -340,12 +340,184 @@ canvas{width:100%!important;height:360px!important}
   text-align:center;margin-top:12px;font-size:.85rem;color:var(--ink-60);
   font-style:italic;
 }
+
+/* ── TOP NAV ── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:flex-end;align-items:center;
+  padding:16px 28px;
+  background:rgba(254,251,244,.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--ink-10);
+}
+.top-nav a{
+  font-size:.85rem;font-weight:600;color:var(--green);text-decoration:none;
+  padding:8px 18px;border-radius:8px;border:1px solid var(--green-soft);
+  background:var(--green-bg);transition:all .2s;cursor:pointer;
+}
+.top-nav a:hover{background:var(--green);color:#fff}
+
+/* ── TABLE MODAL ── */
+.table-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(42,31,14,.5);backdrop-filter:blur(4px);
+  overflow-y:auto;padding:40px 20px;
+}
+.table-modal-overlay.open{display:block}
+.table-modal{
+  max-width:1200px;margin:0 auto;
+  background:#fff;border-radius:var(--radius-lg);
+  box-shadow:0 24px 80px rgba(0,0,0,.2);overflow:hidden;
+}
+.table-modal-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:24px 32px;border-bottom:1px solid var(--ink-10);
+  background:linear-gradient(135deg,#fefbf4,#fff);position:sticky;top:0;z-index:1;
+}
+.table-modal-header h2{font-family:'DM Serif Display',serif;font-size:1.4rem;font-weight:400}
+.table-modal-close{
+  width:36px;height:36px;border-radius:8px;border:1px solid var(--ink-10);
+  background:#fff;cursor:pointer;font-size:1.2rem;color:var(--ink-60);
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.table-modal-close:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.table-modal-body{padding:28px 32px;overflow-x:auto}
+
+/* tier tables */
+.tier-tables{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px}
+@media(max-width:900px){.tier-tables{grid-template-columns:1fr}}
+.tier-card{border:1px solid var(--ink-10);border-radius:var(--radius);overflow:hidden}
+.tier-card.old-tier{border-top:3px solid var(--ink-30)}
+.tier-card.new-tier{border-top:3px solid var(--green)}
+.tier-card-title{
+  padding:12px 16px;font-size:.75rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;background:#f5f3ee;color:var(--ink-60);
+}
+.tier-card.new-tier .tier-card-title{background:var(--green-bg);color:var(--green)}
+.tier-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.tier-table th{
+  text-align:right;padding:8px 10px;font-size:.65rem;font-weight:600;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-30);
+  border-bottom:2px solid var(--ink-10);background:#faf8f3;
+}
+.tier-table th:first-child{text-align:left}
+.tier-table td{padding:7px 10px;border-bottom:1px solid var(--ink-10);text-align:right;
+  font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.tier-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--ink-60)}
+
+/* full payout table */
+.full-table-wrap{margin-top:12px}
+.full-table-wrap h3{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;margin-bottom:16px}
+.full-payout-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.full-payout-table thead{position:sticky;top:0;z-index:1}
+.full-payout-table th{
+  padding:8px 8px;font-size:.6rem;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-30);border-bottom:2px solid var(--ink-10);
+  background:#faf8f3;text-align:right;white-space:nowrap;
+}
+.full-payout-table th:first-child{text-align:center;min-width:44px}
+.full-payout-table th.old-hdr{background:#f0ede6}
+.full-payout-table th.new-hdr{background:#e0f0e8}
+.full-payout-table th.diff-hdr{background:var(--green-bg)}
+.full-payout-table td{
+  padding:5px 8px;border-bottom:1px solid var(--ink-10);text-align:right;
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;
+}
+.full-payout-table td:first-child{
+  text-align:center;font-weight:600;color:var(--ink-60);font-size:.72rem;
+}
+.full-payout-table tr:hover{background:var(--warm-100)}
+.full-payout-table tr.milestone-row{background:var(--green-bg)}
+.full-payout-table tr.milestone-row:hover{background:var(--green-soft)}
+.full-payout-table .diff-cell{color:var(--green);font-weight:600}
+.full-payout-table .sep-col{
+  border-left:3px solid var(--ink-10);border-right:3px solid var(--ink-10);
+  background:var(--warm-50);width:8px;padding:0;
+}
+.full-payout-table th.sep-col{background:var(--warm-100)}
 </style>
 </head>
 <body>
 
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a onclick="document.getElementById('tableModal').classList.add('open')">Table Breakdown</a>
+</nav>
+
+<!-- TABLE MODAL -->
+<div class="table-modal-overlay" id="tableModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="table-modal">
+    <div class="table-modal-header">
+      <h2>Full Table Breakdown</h2>
+      <button class="table-modal-close" onclick="document.getElementById('tableModal').classList.remove('open')">&times;</button>
+    </div>
+    <div class="table-modal-body">
+
+      <!-- TIER STRUCTURES -->
+      <div class="tier-tables">
+        <div class="tier-card old-tier">
+          <div class="tier-card-title">Old Plan &mdash; DS-BU-NA</div>
+          <table class="tier-table">
+            <thead><tr><th>Metric</th><th>&lt;50%</th><th>50-70%</th><th>70-100%</th><th>100-120%</th><th>120-150%</th><th>&ge;150%</th></tr></thead>
+            <tbody>
+              <tr><td>MRR Rate</td><td>0.19952</td><td>1.99100</td><td>1.99100</td><td>1.72330</td><td>1.20000</td><td>1.20000</td></tr>
+              <tr><td>NRR Rate</td><td>0.01021</td><td>0.09178</td><td>0.09178</td><td>0.05100</td><td>0.05100</td><td>0.05100</td></tr>
+              <tr><td>MRR Threshold</td><td>$649.87</td><td>$909.87</td><td>$1,299.87</td><td>$1,559.87</td><td>$1,949.87</td><td></td></tr>
+              <tr><td>NRR Threshold</td><td>$5,998.80</td><td>$8,398.80</td><td>$11,998.80</td><td>$14,398.80</td><td>$17,998.80</td><td></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:10px 16px;font-size:.8rem;color:var(--ink-60);border-top:1px solid var(--ink-10)">
+            Target MRR: <strong>$1,300</strong> &nbsp;|&nbsp; Target NRR: <strong>$12,000</strong>
+          </div>
+        </div>
+        <div class="tier-card new-tier">
+          <div class="tier-card-title">New Plan &mdash; BU-DS-NA-6to50</div>
+          <table class="tier-table">
+            <thead><tr><th>Metric</th><th>&lt;50%</th><th>50-70%</th><th>70-100%</th><th>100-120%</th><th>120-150%</th><th>&ge;150%</th></tr></thead>
+            <tbody>
+              <tr><td>MRR Rate</td><td>0.12351</td><td>1.23252</td><td>1.23252</td><td>1.06680</td><td>0.74286</td><td>0.74286</td></tr>
+              <tr><td>NRR Rate</td><td>0.00680</td><td>0.06120</td><td>0.06120</td><td>0.03400</td><td>0.03400</td><td>0.03400</td></tr>
+              <tr><td>MRR Threshold</td><td>$1,049.79</td><td>$1,469.79</td><td>$2,099.79</td><td>$2,519.79</td><td>$3,149.79</td><td></td></tr>
+              <tr><td>NRR Threshold</td><td>$8,998.20</td><td>$12,598.20</td><td>$17,998.20</td><td>$21,598.20</td><td>$26,998.20</td><td></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:10px 16px;font-size:.8rem;color:var(--green);border-top:1px solid var(--green-soft)">
+            Target MRR: <strong>$2,100</strong> &nbsp;|&nbsp; Target NRR: <strong>$18,000</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL PAYOUT TABLE -->
+      <div class="full-table-wrap">
+        <h3>Payout at Every Achievement Level (1% &ndash; 200%)</h3>
+        <div style="max-height:600px;overflow-y:auto;border:1px solid var(--ink-10);border-radius:var(--radius)">
+          <table class="full-payout-table" id="fullPayoutTable">
+            <thead>
+              <tr>
+                <th>%</th>
+                <th class="old-hdr">Old MRR<br>Achieved</th>
+                <th class="old-hdr">Old NRR<br>Achieved</th>
+                <th class="old-hdr">Old MRR<br>Payout</th>
+                <th class="old-hdr">Old NRR<br>Payout</th>
+                <th class="sep-col"></th>
+                <th class="new-hdr">New MRR<br>Achieved</th>
+                <th class="new-hdr">New NRR<br>Achieved</th>
+                <th class="new-hdr">New MRR<br>Payout</th>
+                <th class="new-hdr">New NRR<br>Payout</th>
+                <th class="sep-col"></th>
+                <th class="diff-hdr">Difference</th>
+              </tr>
+            </thead>
+            <tbody id="fullPayoutBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- HERO -->
-<div class="hero animate">
+<div class="hero animate" style="padding-top:80px">
 <h1>New Plan, <em>Same Pay</em></h1>
   <p class="subtitle">We updated the commission plan to reflect our new pricing. Here's exactly what changed, what didn't, and the math behind it.</p>
 </div>
@@ -476,49 +648,6 @@ canvas{width:100%!important;height:360px!important}
   <div id="scenarioBreakdowns"></div>
 </div>
 
-<!-- WHAT ABOUT VOLUME -->
-<div class="section">
-  <div class="section-label">Step 5</div>
-  <h2>But do I need to sell more stuff?</h2>
-  <p class="desc">Here's the volume you actually need to hit key milestones. Because prices went up 33%, each sale covers more of your target.</p>
-
-  <div class="card">
-    <table class="volume-table">
-      <thead>
-        <tr>
-          <th>Achievement</th>
-          <th>Old MRR Needed</th>
-          <th>New MRR Needed</th>
-          <th>Old at New Prices*</th>
-          <th>Difference</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>50%</td><td>$650</td><td>$1,050</td><td>$865</td>
-          <td class="equal-cell">~same volume</td>
-        </tr>
-        <tr>
-          <td>75%</td><td>$975</td><td>$1,575</td><td>$1,298</td>
-          <td class="equal-cell">~same volume</td>
-        </tr>
-        <tr class="highlight-row">
-          <td><strong>100%</strong></td><td>$1,300</td><td>$2,100</td><td>$1,730</td>
-          <td class="equal-cell">~same volume</td>
-        </tr>
-        <tr>
-          <td>125%</td><td>$1,625</td><td>$2,625</td><td>$2,163</td>
-          <td class="equal-cell">~same volume</td>
-        </tr>
-        <tr>
-          <td>150%</td><td>$1,950</td><td>$3,150</td><td>$2,596</td>
-          <td class="equal-cell">~same volume</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-size:.8rem;color:var(--ink-30);margin-top:12px">* "Old at New Prices" = what your old target would have been if we'd raised prices but kept the old target structure. The new target is in the same ballpark.</p>
-  </div>
-</div>
 
 <!-- FAQ -->
 <div class="section">
@@ -841,6 +970,34 @@ const checkChart = setInterval(() => {
     initChart();
   }
 }, 100);
+
+// ── FULL PAYOUT TABLE ──
+const fmtTbl = n => '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const fmtTblInt = n => '$' + Math.round(n).toLocaleString();
+const milestones = [50,75,100,120,150,200];
+const tbody = document.getElementById('fullPayoutBody');
+for (let pct = 1; pct <= 200; pct++) {
+  const i = pct - 1;
+  const oMRRa = 1300 * pct / 100, oNRRa = 12000 * pct / 100;
+  const nMRRa = 2100 * pct / 100, nNRRa = 18000 * pct / 100;
+  const oldTotal = oldMRR[i] + oldNRR[i];
+  const newTotal = newMRR[i] + newNRR[i];
+  const diff = Math.abs(newTotal - oldTotal);
+  const isMilestone = milestones.includes(pct);
+  const tr = document.createElement('tr');
+  if (isMilestone) tr.className = 'milestone-row';
+  tr.innerHTML = `
+    <td>${pct}%</td>
+    <td>${fmtTblInt(oMRRa)}</td><td>${fmtTblInt(oNRRa)}</td>
+    <td>${fmtTbl(oldMRR[i])}</td><td>${fmtTbl(oldNRR[i])}</td>
+    <td class="sep-col"></td>
+    <td>${fmtTblInt(nMRRa)}</td><td>${fmtTblInt(nNRRa)}</td>
+    <td>${fmtTbl(newMRR[i])}</td><td>${fmtTbl(newNRR[i])}</td>
+    <td class="sep-col"></td>
+    <td class="diff-cell">${diff < 0.02 ? '$0.00' : fmtTbl(diff)}</td>
+  `;
+  tbody.appendChild(tr);
+}
 </script>
 </body>
 </html>
